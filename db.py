@@ -26,6 +26,24 @@ def init_db():
         );
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        );
+    """)
+
+    # 检查是否已有用户，如果没有则插入默认用户
+    cursor.execute("SELECT COUNT(*) FROM users;")
+    count = cursor.fetchone()[0]
+    
+    if count == 0:
+        cursor.execute("""
+            INSERT INTO users (username, password)
+            VALUES (?, ?);
+        """, ("zyz", "123456"))
+
     connection.commit()
     connection.close()
 
@@ -111,3 +129,19 @@ def delete_idea(idea_id: int):
 
     connection.commit()
     connection.close()
+
+
+def verify_user(username: str, password: str):
+    """验证用户登录凭证"""
+    connection = new_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT id FROM users
+        WHERE username = ? AND password = ?;
+    """, (username, password))
+
+    result = cursor.fetchone()
+    connection.close()
+    
+    return result is not None
