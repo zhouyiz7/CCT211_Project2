@@ -201,7 +201,7 @@ class MainApp(tk.Tk):
         if not name:
             return 
         for c in self.categories:
-            if c.lower() == name.lower()
+            if c.lower() == name.lower():
                 messagebox.showinfo("Category exist", "This Category Already Exist")
                 return
         self.categories.append()
