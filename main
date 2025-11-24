@@ -10,7 +10,7 @@ from db import (
     delete_idea,
 )
 
-CATEGORIES = ["gameplay", "character", "level", "skin", "operation"]
+DEFAULT_CATEGORIES = ["gameplay", "character", "level", "skin", "operation"]
 
 
 class IdeaForm(tk.Toplevel):
@@ -20,6 +20,7 @@ class IdeaForm(tk.Toplevel):
         self.mode = mode
         self.idea = idea
         self.on_saved = on_saved
+        self.categories = categories 
 
         if self.mode == "create":
             self.title("Add New Idea")
@@ -118,8 +119,9 @@ class MainApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Gameplay Idea Brainstormer")
-        self.geometry("1200x800")
+        self.geometry("1200x900")
 
+        self.categories = DEFAULT_CATEGORIES.copy()
         self.current_ideas = []
         self.build_widgets()
         self.load_ideas()
@@ -133,7 +135,7 @@ class MainApp(tk.Tk):
         self.category_combo = ttk.Combobox(
             top_frame,
             textvariable=self.category_var,
-            values=["all"] + CATEGORIES,
+            values=["all"] + self.categories,
             state="readonly",
             width=15
         )
@@ -153,6 +155,7 @@ class MainApp(tk.Tk):
         ttk.Button(btn_frame, text="Add Idea", command=self.add_idea).pack(side="left")
         ttk.Button(btn_frame, text="Edit Idea", command=self.edit_idea).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Delete Idea", command=self.delete_idea).pack(side="left")
+        ttk.Button(btn_frame, text="Add a Category", command=self.add_category).pack(side="left")
 
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
@@ -192,6 +195,22 @@ class MainApp(tk.Tk):
 
         self.details_text = tk.Text(right_frame, wrap="word", state="disabled")
         self.details_text.pack(fill="both", expand=True, pady=(5, 0))
+
+    def add_category(self):
+        name = self.new_category_var.get().strip()
+        if not name:
+            return 
+        for c in self.categories:
+            if c.lower() == name.lower()
+                messagebox.showinfo("Category exist", "This Category Already Exist")
+                return
+        self.categories.append()
+        self.category_combo["values"] = ["all"] + self.categories 
+        self.new_category_var.set("")
+    
+    def on_category_changed(self, event=None):
+        self.apply_filters()
+
 
     def load_ideas(self, ideas=None):
         if ideas is None:
