@@ -132,7 +132,7 @@ def delete_idea(idea_id: int):
 
 
 def verify_user(username: str, password: str):
-    """验证用户登录凭证"""
+    
     connection = new_connection()
     cursor = connection.cursor()
 
