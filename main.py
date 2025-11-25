@@ -19,7 +19,7 @@ CATEGORIES = ["gameplay", "character", "level", "skin", "operation"]
 
 class LoginWindow(tk.Tk):
     def __init__(self):
-        """初始化登录窗口"""
+        
         super().__init__()
         self.title("GIB - Login")
         self.geometry("400x260")
