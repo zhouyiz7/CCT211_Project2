@@ -9,10 +9,94 @@ from db import (
     get_ideas_by_filter,
     update_idea,
     delete_idea,
+    verify_user,
 )
 
 # 定义创意分类列表
 CATEGORIES = ["gameplay", "character", "level", "skin", "operation"]
+
+
+# 登录窗口类
+class LoginWindow(tk.Tk):
+    def __init__(self):
+        """初始化登录窗口"""
+        super().__init__()
+        self.title("GIB - Login")
+        self.geometry("400x260")
+        self.resizable(False, False)
+        
+        self.build_widgets()
+        
+        # 窗口居中
+        self.update_idletasks()
+        x = (self.winfo_screenwidth() // 2) - (self.winfo_width() // 2)
+        y = (self.winfo_screenheight() // 2) - (self.winfo_height() // 2)
+        self.geometry(f"+{x}+{y}")
+        
+    def build_widgets(self):
+        """构建登录界面控件"""
+        # 主框架
+        main_frame = ttk.Frame(self, padding="40 40 40 40")
+        main_frame.pack(fill="both", expand=True)
+        
+        # 标题
+        title_label = ttk.Label(
+            main_frame, 
+            text="Gameplay Idea Brainstormer",
+            font=("Arial", 16, "bold")
+        )
+        title_label.pack(pady=(0, 30))
+        
+        # 用户名
+        username_frame = ttk.Frame(main_frame)
+        username_frame.pack(fill="x", pady=5)
+        ttk.Label(username_frame, text="Username:", width=12).pack(side="left")
+        self.username_entry = ttk.Entry(username_frame, width=25)
+        self.username_entry.pack(side="left", padx=(5, 0))
+        
+        # 密码
+        password_frame = ttk.Frame(main_frame)
+        password_frame.pack(fill="x", pady=5)
+        ttk.Label(password_frame, text="Password:", width=12).pack(side="left")
+        self.password_entry = ttk.Entry(password_frame, width=25, show="*")
+        self.password_entry.pack(side="left", padx=(5, 0))
+        
+        # 按钮框架
+        button_frame = ttk.Frame(main_frame)
+        button_frame.pack(pady=(15, 0))
+        
+        # From Lab 8 Ex3
+        exit_btn = ttk.Button(button_frame, text="Exit", command=self.quit, width=20)
+        exit_btn.pack(side="left", padx=10, ipady=10)
+
+        login_btn = ttk.Button(button_frame, text="Login", command=self.login, width=20)
+        login_btn.pack(side="left", padx=10, ipady=10)
+        
+        # 绑定回车键到登录
+        self.username_entry.bind("<Return>", lambda e: self.password_entry.focus())
+        self.password_entry.bind("<Return>", lambda e: self.login())
+        
+        # 设置焦点
+        self.username_entry.focus()
+        
+    def login(self):
+        """处理登录逻辑"""
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get()
+        
+        if verify_user(username, password):
+            # 登录成功，关闭登录窗口并打开主窗口
+            self.destroy()
+            app = MainApp()
+            app.mainloop()
+        else:
+            # 登录失败，显示错误消息
+            messagebox.showerror(
+                "Login Failed",
+                "Invalid username or password.\nPlease try again."
+            )
+            self.password_entry.delete(0, "end")
+            self.username_entry.focus()
 
 
 # 创意表单窗口类，用于添加和编辑创意
@@ -323,3 +407,5 @@ class MainApp(tk.Tk):
 # 程序入口
 if __name__ == "__main__":
     init_db()  # 初始化数据库
+    login_window = LoginWindow()  # 创建登录窗口
+    login_window.mainloop()  # 启动事件循环
