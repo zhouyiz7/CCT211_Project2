@@ -252,7 +252,10 @@ class MainApp(tk.Tk):
         ttk.Button(btn_frame, text="Edit Idea", command=self.edit_idea).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Delete Idea", command=self.delete_idea).pack(side="left")
 
-        
+        self.new_category_var = tk.StringVar()
+        ttk.Entry(btn_frame, textvariable=self.new_category_var, width="20").pack(side="left", padx=(10,5))
+        ttk.Button(btn_frame, text="Add a Category", command=self.add_category).pack(side="left")
+                                                                                  
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
 
@@ -296,6 +299,19 @@ class MainApp(tk.Tk):
         self.details_text = tk.Text(right_frame, wrap="word", state="disabled")
         self.details_text.pack(fill="both", expand=True, pady=(5, 0))
 
+    def add_category(self):
+        name = self.new_category_var().get().strip()
+        if not name:
+            return 
+        for c in self.categories:
+            if c.lower() == name.lower():
+                messagebox.showinfo("Category Exist", "This Category already exist, you can find it with the search bar")
+                return 
+
+        self.categories.append(name)
+        self.category_combo["values"] = ["all"] + self.categories 
+        self.new_category_var.set("")
+                                    
     def load_ideas(self, ideas=None):
         
         if ideas is None:
