@@ -34,7 +34,7 @@ def init_db():
         );
     """)
 
-    # 检查是否已有用户，如果没有则插入默认用户
+   
     cursor.execute("SELECT COUNT(*) FROM users;")
     count = cursor.fetchone()[0]
     
@@ -145,3 +145,33 @@ def verify_user(username: str, password: str):
     connection.close()
     
     return result is not None
+
+def create_user(username: str, password: str) -> bool: 
+    time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    connection = new_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE username = ?;",(username,))
+    existing = cursor.fetchone()
+    if existing is not None:
+        connection.close()
+        return False 
+
+    cursor.execute("""
+        INSERT INTO users (username, password, created_at)
+        VALUES (?, ?, ?);
+    """, (username, password, time_now))
+
+    connection.commit()
+    connection.close()
+    return True
+
+
+
+
+
+
+
+
+
+
