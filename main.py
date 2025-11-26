@@ -300,7 +300,7 @@ class MainApp(tk.Tk):
         self.search_entry.pack(side="left", padx=5)
         ttk.Button(top_frame, text="Go", command=self.apply_filters).pack(side="left", padx=(0, 5))
         ttk.Button(top_frame, text="Clear", command=self.clear_filters).pack(side="left")
-        ttk.Button(button_frame, text="Register", command=self.open_register, width=20).pack(side="left", padx=10, ipady=10)
+        
         
         btn_frame = ttk.Frame(self)
         btn_frame.pack(side="top", fill="x", padx=10, pady=(0, 5))
