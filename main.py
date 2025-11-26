@@ -12,10 +12,10 @@ from db import (
     verify_user,
     delete_ideas_by_category,
     reassign_ideas_category,
-
 )
 
 DEFAULT_CATEGORIES = ["uncategorized", "gameplay", "character", "level", "skin", "operation"]
+
 
 
 class LoginWindow(tk.Tk):
@@ -80,6 +80,7 @@ class LoginWindow(tk.Tk):
         password = self.password_entry.get()
 
         if verify_user(username, password):
+
 
             self.destroy()
             app = MainApp()
@@ -154,7 +155,7 @@ class IdeaForm(tk.Toplevel):
         self.mode = mode
         self.idea = idea
         self.on_saved = on_saved
-        self.categories = categories or DEFAULT_CATEGORIES 
+        self.categories = categories or DEFAULT_CATEGORIES
 
         if self.mode == "create":
             self.title("Add New Idea")
@@ -180,7 +181,7 @@ class IdeaForm(tk.Toplevel):
         self.entry_title.grid(row=0, column=1, **padding)
 
         ttk.Label(self, text="Category:").grid(row=1, column=0, sticky="w", **padding)
-        
+
         self.combo_category = ttk.Combobox(self, values=self.categories, state="readonly", width=40)
         self.combo_category.grid(row=1, column=1, sticky="we", **padding)
 
@@ -259,22 +260,93 @@ class MainApp(tk.Tk):
     def __init__(self):
 
         super().__init__()
+
+        style = ttk.Style(self)
+        style.theme_use("clam")
+
+
+        style.configure(
+            "Retro.TFrame",
+            background="#F5EEDC"
+        )
+
+        style.configure(
+            "Retro.TLabel",
+            font=("Courier New", 11),
+            background="#F5EEDC",
+            foreground="#5A4A42"
+        )
+
+        style.configure(
+            "Retro.TButton",
+            font=("Courier New", 12, "bold"),
+            padding=10,
+            relief="ridge",
+            borderwidth=3,
+            background="#E8DCC2",
+            foreground="#4B3E35"
+        )
+
+        style.map(
+            "Retro.TButton",
+            background=[
+                ("active", "#F2E6CC"),
+                ("pressed", "#D6C5A8")
+            ],
+            relief=[
+                ("pressed", "sunken"),
+                ("active", "raised")
+            ]
+        )
+
+
+        style.configure(
+            "Treeview",
+            background="#FFF9EF",
+            fieldbackground="#FFF9EF",
+            foreground="#4B3E35",
+            bordercolor="#E8DCC2"
+        )
+        style.map(
+            "Treeview",
+            background=[("selected", "#E8D7B8")]
+        )
+
+
+        self.configure(background="#AC9362")
+
         self.title("Gameplay Idea Brainstormer")
-        self.geometry("1200x800")
+        self.geometry("1000x600")
         self.categories = DEFAULT_CATEGORIES.copy()
         self.current_ideas = []
         self.build_widgets()
         self.load_ideas()
+        self.after(100, self.welcome_message)
 
+    def welcome_message(self):
+        messagebox.showinfo(
+            "Welcome!",
+            "Welcome to Gameplay Idea Brainstormer!\n\n"
+            "You can:\n"
+            "Add, edit, and delete ideas\n"
+            "Filter, add, and delete category\n"
+            "If nothing shows up on the screen, make sure a category is selected"
+            "Click 'Add Idea' to get started!"
+        )
     def build_widgets(self):
 
-        top_frame = ttk.Frame(self)
+       
+        top_frame = ttk.Frame(self, style="Retro.TFrame")
         top_frame.pack(side="top", fill="x", padx=10, pady=5)
 
-        ttk.Label(top_frame, text="Category:").pack(side="left")
+       
+        row1 = ttk.Frame(top_frame, style="Retro.TFrame")
+        row1.pack(side="top", fill="x")
+
+        ttk.Label(row1, text="Category:", style="Retro.TLabel").pack(side="left")
         self.category_var = tk.StringVar(value="all")
         self.category_combo = ttk.Combobox(
-            top_frame,
+            row1,
             textvariable=self.category_var,
             values=["all"] + self.categories,
             state="readonly",
@@ -283,29 +355,78 @@ class MainApp(tk.Tk):
         self.category_combo.pack(side="left", padx=(5, 15))
         self.category_combo.bind("<<ComboboxSelected>>", lambda e: self.apply_filters())
 
-        ttk.Label(top_frame, text="Search:").pack(side="left")
+        ttk.Label(row1, text="Search:", style="Retro.TLabel").pack(side="left")
         self.search_var = tk.StringVar()
-        self.search_entry = ttk.Entry(top_frame, textvariable=self.search_var, width=30)
+        self.search_entry = ttk.Entry(row1, textvariable=self.search_var, width=30)
         self.search_entry.pack(side="left", padx=5)
-        ttk.Button(top_frame, text="Go", command=self.apply_filters).pack(side="left", padx=(0, 5))
-        ttk.Button(top_frame, text="Clear", command=self.clear_filters).pack(side="left")
 
-        btn_frame = ttk.Frame(self)
-        btn_frame.pack(side="top", fill="x", padx=10, pady=(0, 5))
+        ttk.Button(
+            row1, text="Go",
+            command=self.apply_filters,
+            style="Retro.TButton"
+        ).pack(side="left", padx=(0, 5))
 
-        ttk.Button(btn_frame, text="Add Idea", command=self.add_idea).pack(side="left")
-        ttk.Button(btn_frame, text="Edit Idea", command=self.edit_idea).pack(side="left", padx=5)
-        ttk.Button(btn_frame, text="Delete Idea", command=self.delete_idea).pack(side="left")
+        ttk.Button(
+            row1, text="Clear",
+            command=self.clear_filters,
+            style="Retro.TButton"
+        ).pack(side="left", padx=(0, 5))
+
         
+        row2 = ttk.Frame(top_frame, style="Retro.TFrame")
+        row2.pack(side="top", fill="x", pady=(5, 0))
+
+        ttk.Button(
+            row2, text="Add Idea",
+            command=self.add_idea,
+            style="Retro.TButton"
+        ).pack(side="left")
+
+        ttk.Button(
+            row2, text="Edit Idea",
+            command=self.edit_idea,
+            style="Retro.TButton"
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            row2, text="Delete Idea",
+            command=self.delete_idea,
+            style="Retro.TButton"
+        ).pack(side="left", padx=5)
+
         self.new_category_var = tk.StringVar()
-        ttk.Entry(btn_frame, textvariable = self.new_category_var, width=20).pack(side="left", padx=(20,5))
-        ttk.Button(btn_frame, text="Add Category", command=self.add_category).pack(side="left")
-        ttk.Button(btn_frame, text="Remove this Category", command=self.remove_category).pack(side="left", padx=5)
+        ttk.Entry(row2, textvariable=self.new_category_var, width=20).pack(side="left", padx=(20, 5))
+
+        ttk.Button(
+            row2, text="Add Category",
+            command=self.add_category,
+            style="Retro.TButton"
+        ).pack(side="left")
+
+        ttk.Button(
+            row2, text="Remove this Category",
+            command=self.remove_category,
+            style="Retro.TButton"
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            row1, text="Information",
+            command=self.show_info,
+            style="Retro.TButton"
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            row2, text="Logout",
+            command=self.logout,
+            style="Retro.TButton"
+        ).pack(side="left", padx=5)
+
+
 
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
 
-        left_frame = ttk.Frame(main_frame)
+        left_frame = ttk.Frame(main_frame, style="Retro.TFrame")
         main_frame.add(left_frame, weight=2)
 
         columns = ("title", "category", "created_at", "updated_at")
@@ -333,13 +454,42 @@ class MainApp(tk.Tk):
 
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
-        right_frame = ttk.Frame(main_frame)
+        right_frame = ttk.Frame(main_frame, style="Retro.TFrame")
         main_frame.add(right_frame, weight=1)
 
-        ttk.Label(right_frame, text="Idea Details:").pack(anchor="w")
+        ttk.Label(right_frame, text="Idea Details:", style="Retro.TLabel").pack(anchor="w")
 
-        self.details_text = tk.Text(right_frame, wrap="word", state="disabled")
+        self.details_text = tk.Text(
+            right_frame,
+            wrap="word",
+            state="disabled",
+            bg="#FFF9EF",
+            fg="#4B3E35"
+        )
         self.details_text.pack(fill="both", expand=True, pady=(5, 0))
+
+    def show_info(self):
+        messagebox.showinfo(
+            "About Gameplay Idea Brainstormer",
+            "This app helps you manage gameplay ideas.\n\n"
+            "If you are stuck on a blank page, please check\n"
+            "that you have selected a category in the drop down\n"
+            "menu in the corner\n"
+            "If you delete any categories, the ideas under will show up in the\n"
+            "uncategorized area\n"
+            "The middle bar can be shifted left or right\n"
+            "Please have fun with out little project! :)"
+
+        )
+
+    def logout(self):
+        confirm = messagebox.askyesno("Logout", "Are you sure you want to log out?")
+        if not confirm:
+            return
+
+        self.destroy()
+        login_window = LoginWindow()
+        login_window.mainloop()
 
     def add_category(self):
         name = self.new_category_var.get().strip()
@@ -351,7 +501,10 @@ class MainApp(tk.Tk):
             return
         for c in self.categories:
             if c.lower() == name.lower():
-                messagebox.showinfo("Category exists", "This category already exist. Please use the search bar to find it.")
+                messagebox.showinfo(
+                    "Category exists",
+                    "This category already exist. Please use the search bar to find it."
+                )
                 return
         self.categories.append(name)
         self.category_combo["values"] = ["all"] + self.categories
@@ -359,7 +512,7 @@ class MainApp(tk.Tk):
 
     def remove_category(self):
         name = self.category_var.get().strip()
-       
+
         if name == "all":
             messagebox.showwarning(
                 "Invalid",
@@ -381,14 +534,14 @@ class MainApp(tk.Tk):
                 "Select a category to remove."
             )
             return
-        all_ideas = get_all_ideas()
+
         used_ideas = [i for i in self.current_ideas if i["category"] == name]
         count = len(used_ideas)
 
         if count > 0:
             answer = messagebox.askyesno(
                 "Category is in use",
-                f"{count} ideas use '{name}'.\n\n Do you want keep the ideas?\n"
+                f"{count} ideas use '{name}'.\n\nDo you want to delete the ideas as well?"
                 "Press 'Yes' to delete both the ideas and the Category.\n"
                 "Press 'No' delete the category and keep these ideas by moving them to 'uncategorized'."
             )
@@ -397,14 +550,10 @@ class MainApp(tk.Tk):
             else:
                 reassign_ideas_category(name, "uncategorized")
 
-        
         self.categories.remove(name)
         self.category_combo["values"] = ["all"] + self.categories
         self.category_var.set("uncategorized")
         self.apply_filters()
-
-
-    
 
     def load_ideas(self, ideas=None):
 
@@ -488,7 +637,7 @@ class MainApp(tk.Tk):
         item_id = int(selection[0])
         idea = next((i for i in self.current_ideas if i["id"] == item_id), None)
 
-        IdeaForm(self, mode="edit", idea=idea, on_saved=self.apply_filters, categories = self.categories)
+        IdeaForm(self, mode="edit", idea=idea, on_saved=self.apply_filters, categories=self.categories)
 
     def delete_idea(self):
 
