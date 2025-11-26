@@ -384,9 +384,9 @@ class MainApp(tk.Tk):
         if count > 0:
             answer = messagebox.askyesno(
                 "Category is in use",
-                f"{count} ideas use '{name}'.\n\n"
-                "Yes = Delete these ideas.\n"
-                "No  = Keep these ideas and move them to 'uncategorized'."
+                f"{count} ideas use '{name}'.\n\n Do you want keep the ideas?\n"
+                "Yes delete these ideas.\n"
+                "No only delete the category and keep these ideas by moving them to 'uncategorized'."
             )
             if answer:
                 delete_ideas_by_category(name)
