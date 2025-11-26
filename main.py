@@ -330,7 +330,8 @@ class MainApp(tk.Tk):
             "You can:\n"
             "Add, edit, and delete ideas\n"
             "Filter, add, and delete category\n"
-            "If nothing shows up on the screen, make sure a category is selected"
+            "If nothing shows up on the screen, make sure a category is selected\n"
+            "Please click on information for more information\n"
             "Click 'Add Idea' to get started!"
         )
     def build_widgets(self):
