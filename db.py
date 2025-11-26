@@ -34,7 +34,7 @@ def init_db():
         );
     """)
 
-    # 检查是否已有用户，如果没有则插入默认用户
+    
     cursor.execute("SELECT COUNT(*) FROM users;")
     count = cursor.fetchone()[0]
     
@@ -129,6 +129,26 @@ def delete_idea(idea_id: int):
 
     connection.commit()
     connection.close()
+
+def create_user(username: str, password: str) -> bool:
+    connection = new_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE username = ?;", (username,))
+    existing = cursor.fetchone()
+    if existing is not None:
+        connection.close()
+        return False
+
+    cursor.execute("""
+        INSERT INTO users (username, password)
+        VALUES (?, ?);
+    """, (username, password))
+
+    connection.commit()
+    connection.close()
+    return True
+
 
 
 def verify_user(username: str, password: str):
