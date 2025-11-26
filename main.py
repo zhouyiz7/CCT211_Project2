@@ -155,7 +155,7 @@ class IdeaForm(tk.Toplevel):
         self.mode = mode
         self.idea = idea
         self.on_saved = on_saved
-        self.categories = categories or DEFAULT_CATEGORIES
+        self.categories = DEFAULT_CATEGORIES
 
         if self.mode == "create":
             self.title("Add New Idea")
