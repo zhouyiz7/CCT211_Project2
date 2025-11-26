@@ -147,7 +147,6 @@ def verify_user(username: str, password: str):
     return result is not None
 
 def create_user(username: str, password: str) -> bool: 
-    time = datetime.now().strftime("%Y-%m-%d %H:%M")
     connection = new_connection()
     cursor = connection.cursor()
 
@@ -158,9 +157,9 @@ def create_user(username: str, password: str) -> bool:
         return False 
 
     cursor.execute("""
-        INSERT INTO users (username, password, created_at)
-        VALUES (?, ?, ?);
-    """, (username, password, time))
+        INSERT INTO users (username, password)
+        VALUES (?, ?);
+    """, (username, password))
 
     connection.commit()
     connection.close()
