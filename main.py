@@ -376,7 +376,7 @@ class MainApp(tk.Tk):
             if answer: 
                 delete_ideas_by_category(name) 
             else: 
-                reassign_ideas_category(name)
+                reassign_ideas_category(name, "uncategorized")
         self.categories.remove(name) 
         self.category_combo["values"] = ["all"] + self.categories
         self.category_var.set("all")
