@@ -363,7 +363,7 @@ class MainApp(tk.Tk):
             messagebox.showwarning("Invalid", "You cannot remove 'uncategorized'.")
         if name not in self.categories: 
             messagebox.showwarning("Invalid", "Select a category to remove.")
-        return
+            return
 
         used_ideas = [i for i in self.current_ideas if i["category"] == name]
         count = len(used_ideas)
