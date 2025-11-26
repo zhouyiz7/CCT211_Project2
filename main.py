@@ -351,7 +351,7 @@ class MainApp(tk.Tk):
                 return
         self.categories.append(name)
         self.category_combo["values"] = ["all"] + self.categories
-        self.new_categories_var.set("")
+        self.new_category_var.set("")
 
     def remove_category(self):
         name = self.category_var.get().strip()
