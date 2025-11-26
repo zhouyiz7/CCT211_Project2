@@ -9,8 +9,9 @@ from db import (
     get_ideas_by_filter,
     update_idea,
     delete_idea,
-    verify_user,
     create_user,
+    verify_user,
+    
 )
 
 
@@ -98,6 +99,57 @@ class LoginWindow(tk.Tk):
             )
             self.password_entry.delete(0, "end")
             self.username_entry.focus()
+   
+    def open_register(self):
+        RegisterWindow(self)
+class RegisterWindow(tk.Toplevel):
+    def __init__(self, master): 
+        super().__init__(master)
+        self.title("Create Account")
+        self.resizable(False, False)
+        frame = ttk.Frame(self, padding=20)
+        frame.pack(fill="both", expand=True)
+
+        ttk.Label(frame, text="Username:").grid(row=0, column=0, sticky="w", pady=5)
+        self.username_entry = ttk.Entry(frame, width=25)
+        self.username_entry.grid(row=0, column=1, pady=5)
+
+        ttk.Label(frame, text="Password:").grid(row=1, column=0, sticky="w", pady=5)
+        self.password_entry = ttk.Entry(frame, width=25, show="*")
+        self.password_entry.grid(row=1, column=1, pady=5)
+
+        ttk.Label(frame, text="Confirm").grid(row=2, column=0, sticky="w", pady=5)
+        self.confirm_entry = ttk.Entry(frame, width=25, show="*")
+        self.confirm_entry.grid(row=2, column=1, pady=5)
+
+        btn_frame = ttk.Frame(frame)
+        btn_frame.grid(row=3, column=0, columnspan=2, pady=(10, 0))
+
+        ttk.Button(btn_frame, text="Create", command=self.create_account).pack(side="left", padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=self.destroy).pack(side="left", padx=5)
+
+        self.username_entry.focus()
+
+    def create_account(self):
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get()
+        confirm = self.confirm_entry.get()
+
+        if not username or not password:
+            messagebox.showwarning("Missing Info", "Please enter both username and password.")
+            return
+
+        if password != confirm:
+            messagebox.showwarning("Password Mismatch", "Passwords do not match.")
+            return
+
+        ok = create_user(username, password)
+        if not ok:
+            messagebox.showerror("Error", "This username is already taken.")
+            return
+
+        messagebox.showinfo("Success", "Account created. You can now log in.")
+        self.destroy()
 
 
 
@@ -244,7 +296,7 @@ class MainApp(tk.Tk):
         self.search_entry.pack(side="left", padx=5)
         ttk.Button(top_frame, text="Go", command=self.apply_filters).pack(side="left", padx=(0, 5))
         ttk.Button(top_frame, text="Clear", command=self.clear_filters).pack(side="left")
-
+        ttk.Button(button_frame, text="Register", command=self.open_register, width=20).pack(side="left", padx=10, ipady=10)
         
         btn_frame = ttk.Frame(self)
         btn_frame.pack(side="top", fill="x", padx=10, pady=(0, 5))
@@ -252,7 +304,7 @@ class MainApp(tk.Tk):
         ttk.Button(btn_frame, text="Add Idea", command=self.add_idea).pack(side="left")
         ttk.Button(btn_frame, text="Edit Idea", command=self.edit_idea).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Delete Idea", command=self.delete_idea).pack(side="left")
-
+        
         
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
