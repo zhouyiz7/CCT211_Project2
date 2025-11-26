@@ -355,35 +355,51 @@ class MainApp(tk.Tk):
 
     def remove_category(self):
         name = self.category_var.get().strip()
-
+       
         if name == "all":
-            messagebox.showwarning("Invalid", "You cannot remove 'all'. For removing a category, please select the category in the drop down menu and click remove category only when there exist only ideas from the said category")
-            return 
-        if name == "uncategorized":
-            messagebox.showwarning("Invalid", "You cannot remove 'uncategorized'.")
-        if name not in self.categories: 
-            messagebox.showwarning("Invalid", "Select a category to remove.")
+            messagebox.showwarning(
+                "Invalid",
+                "You cannot remove 'all'.\n\n"
+                "Please select a specific category from the drop-down first."
+            )
             return
 
+        if name == "uncategorized":
+            messagebox.showwarning(
+                "Invalid",
+                "You cannot remove 'uncategorized'."
+            )
+            return
+
+        if name not in self.categories:
+            messagebox.showwarning(
+                "Invalid",
+                "Select a category to remove."
+            )
+            return
         used_ideas = [i for i in self.current_ideas if i["category"] == name]
         count = len(used_ideas)
 
-        if count > 0: 
-            answer = messagebox.askyesno("Category is in use", f"{count} ideas use '{name}'.  "
-            "Yes = Delete these ideas"
-            "No = Keep these ideas and move to 'uncategorized'"
-        )
-            if answer: 
-                delete_ideas_by_category(name) 
-            else: 
+        if count > 0:
+            answer = messagebox.askyesno(
+                "Category is in use",
+                f"{count} ideas use '{name}'.\n\n"
+                "Yes = Delete these ideas.\n"
+                "No  = Keep these ideas and move them to 'uncategorized'."
+            )
+            if answer:
+                delete_ideas_by_category(name)
+            else:
                 reassign_ideas_category(name, "uncategorized")
-        self.categories.remove(name) 
+
+        
+        self.categories.remove(name)
         self.category_combo["values"] = ["all"] + self.categories
         self.category_var.set("all")
         self.apply_filters()
 
-    
 
+    
 
     def load_ideas(self, ideas=None):
 
