@@ -299,8 +299,8 @@ class MainApp(tk.Tk):
         
         self.new_category_var = tk.StringVar()
         ttk.Entry(btn_frame, textvariable = self.new_category_var, width=20).pack(side="left", padx=(20,5))
-        ttk.Button(btn_frame, text="Add Category, command=self.add_category).pack(side="left")
-        ttk.Button(btn_frame, text="Remove Category", command=self.remove_category).pack(side + "left", padx=5)
+        ttk.Button(btn_frame, text="Add Category, command=self.add_category").pack(side="left")
+        ttk.Button(btn_frame, text="Remove Category", command=self.remove_category).pack(side="left", padx=5)
 
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
