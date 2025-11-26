@@ -151,7 +151,7 @@ def delete_ideas_by_category(category: str):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM ideas WHERE category = ?;", (category,))
     connection.commit()
-    cnnection.close()
+    connection.close()
 
 def reassign_ideas_category(old_category: str, new_category: str):
     connection = new_connection()
