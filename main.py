@@ -300,7 +300,7 @@ class MainApp(tk.Tk):
         self.new_category_var = tk.StringVar()
         ttk.Entry(btn_frame, textvariable = self.new_category_var, width=20).pack(side="left", padx=(20,5))
         ttk.Button(btn_frame, text="Add Category, command=self.add_category).pack(side="left")
-        ttk.Button(btn_frame, text="Remove Category", command=self.remove_category).pack(side+"left",padx=5)
+        ttk.Button(btn_frame, text="Remove Category", command=self.remove_category).pack(side + "left", padx=5)
 
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
@@ -349,21 +349,21 @@ class MainApp(tk.Tk):
             if c.lower == name.lower():
                 messagebox.showinfo("Category exists", "This category already exist. Please use the search bar to find it.")
                 return
-    self.categories.append(name)
-    self.category_combo["values"] = ["all"] + self.categories
-    self.new_categories_var.set("")
+        self.categories.append(name)
+        self.category_combo["values"] = ["all"] + self.categories
+        self.new_categories_var.set("")
 
     def remove_category(self):
-        name - self.category_var.get().strip()
+        name = self.category_var.get().strip()
 
         if name == "all":
             messagebox.showwarning("Invalid", "You cannot remove 'all'.")
             return 
         if name == "uncategorized":
-            messagebox.showwarning("Invalid", "You cannot remove 'uncategorized'."
+            messagebox.showwarning("Invalid", "You cannot remove 'uncategorized'.")
         if name not in self.categories: 
             messagebox.showwarning("Invalid", "Select a category to remove.")
-            return
+        return
 
         used_ideas = [i for i in self.current_ideas if i["category"] == name]
         count = len(used_ideas)
@@ -376,7 +376,7 @@ class MainApp(tk.Tk):
             if answer: 
                 delete_ideas_by_category(name) 
             else: 
-                reassign_ideas_by_category(name)
+                reassign_ideas_category(name)
         self.categories.remove(name) 
         self.category_combo["values"] = ["all"] + self.categories
         self.category_var.set("all")
