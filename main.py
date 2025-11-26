@@ -344,6 +344,10 @@ class MainApp(tk.Tk):
     def add_category(self):
         name = self.new_category_var.get().strip()
         if not name:
+            messagebox.showwarning(
+                "No Category Name inputed",
+                "Please type a category name in the bar to the left of the 'add category button'"
+            )
             return
         for c in self.categories:
             if c.lower() == name.lower():
