@@ -24,7 +24,7 @@ class LoginWindow(tk.Tk):
         
         super().__init__()
         self.title("GIB - Login")
-        self.geometry("400x260")
+        self.geometry("800x400")
         self.resizable(False, False)
         
         self.build_widgets()
@@ -73,7 +73,9 @@ class LoginWindow(tk.Tk):
 
         login_btn = ttk.Button(button_frame, text="Login", command=self.login, width=20)
         login_btn.pack(side="left", padx=10, ipady=10)
-        
+
+        register_btn = ttk.Button(button)frame, text="Create an Account", command=self.open_register, width = 20)
+        register_btn.pack(side="left", padx, ipady=10)
         
         self.username_entry.bind("<Return>", lambda e: self.password_entry.focus())
         self.password_entry.bind("<Return>", lambda e: self.login())
@@ -102,6 +104,8 @@ class LoginWindow(tk.Tk):
    
     def open_register(self):
         RegisterWindow(self)
+
+
 class RegisterWindow(tk.Toplevel):
     def __init__(self, master): 
         super().__init__(master)
