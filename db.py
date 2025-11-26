@@ -160,7 +160,7 @@ def create_user(username: str, password: str) -> bool:
     cursor.execute("""
         INSERT INTO users (username, password, created_at)
         VALUES (?, ?, ?);
-    """, (username, password, time_now))
+    """, (username, password, time))
 
     connection.commit()
     connection.close()
