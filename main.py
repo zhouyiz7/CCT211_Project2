@@ -746,7 +746,7 @@ class MainApp(tk.Tk):
         delete_idea(item_id)
         self.apply_filters()
 
-
+#Multiple accounts have the same files there is no account exclusive files
 if __name__ == "__main__":
     # Set up database tables and then start at the login window
     init_db()
