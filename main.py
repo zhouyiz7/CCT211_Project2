@@ -346,7 +346,7 @@ class MainApp(tk.Tk):
         if not name:
             return
         for c in self.categories:
-            if c.lower == name.lower():
+            if c.lower() == name.lower():
                 messagebox.showinfo("Category exists", "This category already exist. Please use the search bar to find it.")
                 return
         self.categories.append(name)
@@ -377,6 +377,7 @@ class MainApp(tk.Tk):
                 "Select a category to remove."
             )
             return
+        all_ideas = get_all_ideas()
         used_ideas = [i for i in self.current_ideas if i["category"] == name]
         count = len(used_ideas)
 
@@ -395,7 +396,7 @@ class MainApp(tk.Tk):
         
         self.categories.remove(name)
         self.category_combo["values"] = ["all"] + self.categories
-        self.category_var.set("all")
+        self.category_var.set("uncategorized")
         self.apply_filters()
 
 
