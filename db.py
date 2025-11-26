@@ -34,10 +34,9 @@ def init_db():
         );
     """)
 
-    # 检查是否已有用户，如果没有则插入默认用户
     cursor.execute("SELECT COUNT(*) FROM users;")
     count = cursor.fetchone()[0]
-    
+
     if count == 0:
         cursor.execute("""
             INSERT INTO users (username, password)
@@ -131,8 +130,27 @@ def delete_idea(idea_id: int):
     connection.close()
 
 
+def create_user(username: str, password: str) -> bool:
+    connection = new_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE username = ?;", (username,))
+    existing = cursor.fetchone()
+    if existing is not None:
+        connection.close()
+        return False
+
+    cursor.execute("""
+        INSERT INTO users (username, password)
+        VALUES (?, ?);
+    """, (username, password))
+
+    connection.commit()
+    connection.close()
+    return True
+
+
 def verify_user(username: str, password: str):
-    
     connection = new_connection()
     cursor = connection.cursor()
 
@@ -143,5 +161,27 @@ def verify_user(username: str, password: str):
 
     result = cursor.fetchone()
     connection.close()
-    
+
     return result is not None
+
+
+def delete_ideas_by_category(category: str):
+    connection = new_connection()
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM ideas WHERE category = ?;", (category,))
+    connection.commit()
+    connection.close()
+
+
+def reassign_ideas_category(old_category: str, new_category: str):
+    connection = new_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE ideas 
+        SET category = ?
+        WHERE category = ?;
+    """, (new_category, old_category))
+
+    connection.commit()
+    connection.close()
