@@ -15,7 +15,7 @@ from db import (
 
 )
 
-DEFAULT_CATEGORIES = ["gameplay", "character", "level", "skin", "operation"]
+DEFAULT_CATEGORIES = ["uncategorized", "gameplay", "character", "level", "skin", "operation"]
 
 
 class LoginWindow(tk.Tk):
@@ -149,8 +149,7 @@ class RegisterWindow(tk.Toplevel):
 
 class IdeaForm(tk.Toplevel):
 
-    def __init__(self, master, mode="create", idea=None, on_saved=None):
-
+    def __init__(self, master, mode="create", idea=None, on_saved=None, categories=None):
         super().__init__(master)
         self.mode = mode
         self.idea = idea
@@ -263,7 +262,6 @@ class MainApp(tk.Tk):
         self.title("Gameplay Idea Brainstormer")
         self.geometry("1200x800")
         self.categories = DEFAULT_CATEGORIES.copy()
-
         self.current_ideas = []
         self.build_widgets()
         self.load_ideas()
@@ -300,8 +298,9 @@ class MainApp(tk.Tk):
         ttk.Button(btn_frame, text="Delete Idea", command=self.delete_idea).pack(side="left")
         
         self.new_category_var = tk.StringVar()
-        ttk.Entry(btn_frame, textvariable = self.new_category_var, width=20.pack(side="left", padx=(20,5))
-        ttl.Button(btn_frame, text="Add Category, command=self.add_category).pack(side="left")
+        ttk.Entry(btn_frame, textvariable = self.new_category_var, width=20).pack(side="left", padx=(20,5))
+        ttk.Button(btn_frame, text="Add Category, command=self.add_category).pack(side="left")
+        ttk.Button(btn_frame, text="Remove Category", command=self.remove_category).pack(side+"left",padx=5)
 
         main_frame = ttk.PanedWindow(self, orient="horizontal")
         main_frame.pack(side="top", fill="both", expand=True, padx=10, pady=5)
@@ -353,6 +352,37 @@ class MainApp(tk.Tk):
     self.categories.append(name)
     self.category_combo["values"] = ["all"] + self.categories
     self.new_categories_var.set("")
+
+    def remove_category(self):
+        name - self.category_var.get().strip()
+
+        if name == "all":
+            messagebox.showwarning("Invalid", "You cannot remove 'all'.")
+            return 
+        if name == "uncategorized":
+            messagebox.showwarning("Invalid", "You cannot remove 'uncategorized'."
+        if name not in self.categories: 
+            messagebox.showwarning("Invalid", "Select a category to remove.")
+            return
+
+        used_ideas = [i for i in self.current_ideas if i["category"] == name]
+        count = len(used_ideas)
+
+        if count > 0: 
+            answer = messagebox.askyesno("Category is in use", f"{count} ideas use '{name}'.  "
+            "Yes = Delete these ideas"
+            "No = Keep these ideas and move to 'uncategorized'"
+        )
+            if answer: 
+                delete_ideas_by_category(name) 
+            else: 
+                reassign_ideas_by_category(name)
+        self.categories.remove(name) 
+        self.category_combo["values"] = ["all"] + self.categories
+        self.category_var.set("all")
+        self.apply_filters()
+
+    
 
 
     def load_ideas(self, ideas=None):
@@ -425,7 +455,7 @@ class MainApp(tk.Tk):
 
     def add_idea(self):
 
-        IdeaForm(self, mode="create", idea=None, on_saved=self.apply_filters, categories=self.categoies)
+        IdeaForm(self, mode="create", idea=None, on_saved=self.apply_filters, categories=self.categories)
 
     def edit_idea(self):
 
